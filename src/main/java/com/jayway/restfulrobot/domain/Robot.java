@@ -1,14 +1,7 @@
 package com.jayway.restfulrobot.domain;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
-import org.springframework.hateoas.Link;
-import org.springframework.hateoas.ResourceSupport;
-
-import com.jayway.restfulrobot.rest.RoomController;
-
-public class Robot extends ResourceSupport {
+public class Robot {
 
 	public static final int NORTH = 0;
 	public static final int WEST = 1;
@@ -39,9 +32,8 @@ public class Robot extends ResourceSupport {
 		return name;
 	}
 
-	public Link getRoom() {
-		return linkTo(methodOn(RoomController.class).getRoom(room.getRoomId()))
-				.withSelfRel();
+	public Room getRoom() {
+		return room;
 	}
 
 	public int getXPos() {

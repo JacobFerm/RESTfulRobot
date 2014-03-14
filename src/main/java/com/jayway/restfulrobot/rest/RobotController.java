@@ -1,10 +1,9 @@
 package com.jayway.restfulrobot.rest;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
-
+import java.util.Collection;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,85 +16,80 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.jayway.restfulrobot.domain.Robot;
 import com.jayway.restfulrobot.domain.Room;
-import com.jayway.restfulrobot.infra.RobotList;
-import com.jayway.restfulrobot.infra.RobotRoot;
-import com.jayway.restfulrobot.infra.RoomList;
+import com.jayway.restfulrobot.infra.RobotRepository;
+import com.jayway.restfulrobot.infra.RoomRepository;
+import com.jayway.restfulrobot.rest.resource.RobotListResource;
+import com.jayway.restfulrobot.rest.resource.RobotResource;
+import com.jayway.restfulrobot.rest.resource.RootResource;
 
 @Controller
 public class RobotController {
 
+	@Autowired
+	private RobotRepository robotRepository;
+
+	@Autowired
+	private RoomRepository roomRepository;
+
 	@RequestMapping("/")
 	@ResponseBody
-	public HttpEntity<RobotRoot> root() {
+	public HttpEntity<RootResource> root() {
 
-		RobotRoot root = new RobotRoot();
-		root.add(linkTo(methodOn(RobotController.class).root()).withSelfRel());
-		root.add(linkTo(methodOn(RobotController.class).getRobots()).withRel(
-				"List Robots"));
-		root.add(linkTo(methodOn(RoomController.class).getRooms()).withRel(
-				"List Rooms"));
+		RootResource root = new RootResource();
 
-		return new ResponseEntity<RobotRoot>(root, HttpStatus.OK);
+		return new ResponseEntity<RootResource>(root, HttpStatus.OK);
 	}
 
 	@RequestMapping("/robots")
 	@ResponseBody
-	public HttpEntity<RobotList> getRobots() {
-		RobotList robotList = new RobotList();
+	public HttpEntity<RobotListResource> getRobots() {
 
-		robotList.add(linkTo(methodOn(RobotController.class).root()).withRel(
-				"Home"));
-		robotList.add(linkTo(methodOn(RobotController.class).getRobots())
-				.withSelfRel());
+		Collection<Robot> robots = robotRepository.getRobots();
+		RobotListResource robotList = new RobotListResource(robots);
 
-		robotList.add(linkTo(methodOn(RobotController.class).addRobot(null))
-				.withRel("Add Robot"));
-
-		return new ResponseEntity<RobotList>(robotList, HttpStatus.OK);
+		return new ResponseEntity<RobotListResource>(robotList, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/robots/add", method = RequestMethod.POST, consumes = "application/json")
 	@ResponseBody
-	public HttpEntity<RobotList> addRobot(@RequestBody Map<String, Object> data) {
+	public HttpEntity<RobotListResource> addRobot(
+			@RequestBody Map<String, Object> data) {
 
 		if (!data.containsKey("roomId") || !data.containsKey("name")) {
-			return new ResponseEntity<RobotList>(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<RobotListResource>(HttpStatus.BAD_REQUEST);
 		}
 
-		RoomList roomList = new RoomList();
-		Room room = roomList.getRoom((Integer) data.get("roomId"));
+		Room room = roomRepository.getRoom((Integer) data.get("roomId"));
 
 		if (room == null) {
-			return new ResponseEntity<RobotList>(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<RobotListResource>(HttpStatus.BAD_REQUEST);
 		}
-		RobotList robotList = new RobotList();
-		robotList.addRobot((String) data.get("name"), room);
+		// RobotList robotList = new RobotList();
+		robotRepository.addRobot((String) data.get("name"), room);
 
 		return getRobots();
 	}
 
 	@RequestMapping("/robots/{id}")
 	@ResponseBody
-	public HttpEntity<Robot> getRobot(@PathVariable int id) {
+	public HttpEntity<RobotResource> getRobot(@PathVariable int id) {
 
-		RobotList robotList = new RobotList();
-		Robot robot = robotList.getRobot(id);
+		Robot robot = robotRepository.getRobot(id);
 
 		if (robot == null) {
-			return new ResponseEntity<Robot>(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<RobotResource>(HttpStatus.BAD_REQUEST);
 		}
 
-		setLinks(robot);
+		RobotResource robotResource = new RobotResource(robot);
 
-		return new ResponseEntity<Robot>(robot, HttpStatus.OK);
+		return new ResponseEntity<RobotResource>(robotResource, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/robots/{id}/turnleft", method = RequestMethod.POST)
 	@ResponseBody
-	public HttpEntity<Robot> turnLeft(@PathVariable int id) {
+	public HttpEntity<RobotResource> turnLeft(@PathVariable int id) {
 
-		RobotList robotList = new RobotList();
-		Robot robot = robotList.getRobot(id);
+		Robot robot = robotRepository.getRobot(id);
 		robot.turnLeft();
 
 		return getRobot(id);
@@ -103,10 +97,9 @@ public class RobotController {
 
 	@RequestMapping(value = "/robots/{id}/turnright", method = RequestMethod.POST)
 	@ResponseBody
-	public HttpEntity<Robot> turnRight(@PathVariable int id) {
+	public HttpEntity<RobotResource> turnRight(@PathVariable int id) {
 
-		RobotList robotList = new RobotList();
-		Robot robot = robotList.getRobot(id);
+		Robot robot = robotRepository.getRobot(id);
 		robot.turnRight();
 
 		return getRobot(id);
@@ -114,35 +107,12 @@ public class RobotController {
 
 	@RequestMapping(value = "/robots/{id}/move", method = RequestMethod.POST)
 	@ResponseBody
-	public HttpEntity<Robot> move(@PathVariable int id) {
+	public HttpEntity<RobotResource> move(@PathVariable int id) {
 
-		RobotList robotList = new RobotList();
-		Robot robot = robotList.getRobot(id);
+		Robot robot = robotRepository.getRobot(id);
 		robot.move();
 
 		return getRobot(id);
-	}
-
-	public void setLinks(Robot robot) {
-		robot.removeLinks();
-		robot.add(linkTo(methodOn(RobotController.class).root())
-				.withRel("Home"));
-
-		robot.add(linkTo(
-				methodOn(RobotController.class).getRobot(robot.getRobotId()))
-				.withSelfRel());
-
-		robot.add(linkTo(
-				methodOn(RobotController.class).turnLeft(robot.getRobotId()))
-				.withRel("Turn Left"));
-		robot.add(linkTo(
-				methodOn(RobotController.class).turnRight(robot.getRobotId()))
-				.withRel("Turn Right"));
-		if (robot.canMove()) {
-			robot.add(linkTo(
-					methodOn(RobotController.class).move(robot.getRobotId()))
-					.withRel("Move Robot Forward"));
-		}
 	}
 
 }

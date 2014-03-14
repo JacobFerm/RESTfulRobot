@@ -1,26 +1,25 @@
-package com.jayway.restfulrobot.infra;
+package com.jayway.restfulrobot.rest.resource;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.hateoas.ResourceSupport;
 
 import com.jayway.restfulrobot.domain.Robot;
-import com.jayway.restfulrobot.domain.Room;
 import com.jayway.restfulrobot.rest.RobotController;
 
-public class RobotList extends ResourceSupport {
+public class RobotListResource extends ResourceSupport {
 
-	private static Map<Integer, Robot> robots = new HashMap<Integer, Robot>();
-	private static int nextRobotId = 1;
+	ArrayList<Map<String, Object>> robots;
 
-	public ArrayList<Map<String, Object>> getRobots() {
-		ArrayList<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-		for (Robot r : robots.values()) {
+	public RobotListResource(Collection<Robot> robotList) {
+		robots = new ArrayList<Map<String, Object>>();
+		for (Robot r : robotList) {
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("id", r.getRobotId());
 			map.put("name", r.getName());
@@ -29,19 +28,19 @@ public class RobotList extends ResourceSupport {
 							methodOn(RobotController.class).getRobot(
 									r.getRobotId())).withRel(
 							"Robot " + r.getRobotId()));
-			list.add(map);
+			robots.add(map);
 		}
-		return list;
 
+		this.add(linkTo(methodOn(RobotController.class).root()).withRel("Home"));
+		this.add(linkTo(methodOn(RobotController.class).getRobots())
+				.withSelfRel());
+		this.add(linkTo(methodOn(RobotController.class).addRobot(null))
+				.withRel("Add Robot"));
 	}
 
-	public void addRobot(String name, Room room) {
-		robots.put(nextRobotId, new Robot(nextRobotId, name, room));
-		nextRobotId++;
-	}
+	public ArrayList<Map<String, Object>> getRobots() {
+		return robots;
 
-	public Robot getRobot(int id) {
-		return robots.get(id);
 	}
 
 }

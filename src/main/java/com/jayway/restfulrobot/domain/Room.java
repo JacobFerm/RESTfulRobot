@@ -1,8 +1,6 @@
 package com.jayway.restfulrobot.domain;
 
-import org.springframework.hateoas.ResourceSupport;
-
-public class Room extends ResourceSupport {
+public class Room {
 
 	private int roomId;
 	private int width;
