@@ -87,7 +87,7 @@ public class RobotController {
 		return new ResponseEntity<Robot>(robot, HttpStatus.OK);
 	}
 
-	@RequestMapping("/robots/{id}/turnleft")
+	@RequestMapping(value = "/robots/{id}/turnleft", method = RequestMethod.POST)
 	@ResponseBody
 	public HttpEntity<Robot> turnLeft(@PathVariable int id) {
 
@@ -98,7 +98,7 @@ public class RobotController {
 		return getRobot(id);
 	}
 
-	@RequestMapping("/robots/{id}/turnright")
+	@RequestMapping(value = "/robots/{id}/turnright", method = RequestMethod.POST)
 	@ResponseBody
 	public HttpEntity<Robot> turnRight(@PathVariable int id) {
 
@@ -109,7 +109,7 @@ public class RobotController {
 		return getRobot(id);
 	}
 
-	@RequestMapping("/robots/{id}/move")
+	@RequestMapping(value = "/robots/{id}/move", method = RequestMethod.POST)
 	@ResponseBody
 	public HttpEntity<Robot> move(@PathVariable int id) {
 
