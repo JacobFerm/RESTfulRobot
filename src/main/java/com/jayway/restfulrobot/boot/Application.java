@@ -1,11 +1,11 @@
-package robot;
+package com.jayway.restfulrobot.boot;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 
-@ComponentScan
-// @EnableHypermediaSupport(type = HypermediaType.HAL)
+@ComponentScan({ "com.jayway.restfulrobot.rest",
+		"com.jayway.restfulrobot.infra" })
 @EnableAutoConfiguration
 public class Application {
 

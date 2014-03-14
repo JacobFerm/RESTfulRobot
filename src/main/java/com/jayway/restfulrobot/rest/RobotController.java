@@ -1,9 +1,8 @@
-package robot;
+package com.jayway.restfulrobot.rest;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.http.HttpEntity;
@@ -16,6 +15,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.jayway.restfulrobot.domain.Robot;
+import com.jayway.restfulrobot.domain.Room;
+import com.jayway.restfulrobot.infra.RobotList;
+import com.jayway.restfulrobot.infra.RobotRoot;
+import com.jayway.restfulrobot.infra.RoomList;
+
 @Controller
 public class RobotController {
 
@@ -27,7 +32,7 @@ public class RobotController {
 		root.add(linkTo(methodOn(RobotController.class).root()).withSelfRel());
 		root.add(linkTo(methodOn(RobotController.class).getRobots()).withRel(
 				"List Robots"));
-		root.add(linkTo(methodOn(RobotController.class).getRooms()).withRel(
+		root.add(linkTo(methodOn(RoomController.class).getRooms()).withRel(
 				"List Rooms"));
 
 		return new ResponseEntity<RobotRoot>(root, HttpStatus.OK);
@@ -36,37 +41,35 @@ public class RobotController {
 	@RequestMapping("/robots")
 	@ResponseBody
 	public HttpEntity<RobotList> getRobots() {
+		RobotList robotList = new RobotList();
 
-		RobotList list = new RobotList();
-
-		list.add(linkTo(methodOn(RobotController.class).root()).withRel("Home"));
-		list.add(linkTo(methodOn(RobotController.class).getRobots())
+		robotList.add(linkTo(methodOn(RobotController.class).root()).withRel(
+				"Home"));
+		robotList.add(linkTo(methodOn(RobotController.class).getRobots())
 				.withSelfRel());
 
-		HashMap<String, Integer> defaultRoom = new HashMap<String, Integer>();
-		defaultRoom.put("roomId", 1);
-		list.add(linkTo(methodOn(RobotController.class).addRobot(defaultRoom))
+		robotList.add(linkTo(methodOn(RobotController.class).addRobot(null))
 				.withRel("Add Robot"));
 
-		return new ResponseEntity<RobotList>(list, HttpStatus.OK);
+		return new ResponseEntity<RobotList>(robotList, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/robots/add", method = RequestMethod.POST, consumes = "application/json")
 	@ResponseBody
-	public HttpEntity<RobotList> addRobot(@RequestBody Map<String, Integer> data) {
+	public HttpEntity<RobotList> addRobot(@RequestBody Map<String, Object> data) {
 
-		if (!data.containsKey("roomId")) {
+		if (!data.containsKey("roomId") || !data.containsKey("name")) {
 			return new ResponseEntity<RobotList>(HttpStatus.BAD_REQUEST);
 		}
 
 		RoomList roomList = new RoomList();
-		Room room = roomList.getRoom(data.get("roomId"));
+		Room room = roomList.getRoom((Integer) data.get("roomId"));
 
 		if (room == null) {
 			return new ResponseEntity<RobotList>(HttpStatus.BAD_REQUEST);
 		}
 		RobotList robotList = new RobotList();
-		robotList.addRobot(room);
+		robotList.addRobot((String) data.get("name"), room);
 
 		return getRobots();
 	}
@@ -75,14 +78,14 @@ public class RobotController {
 	@ResponseBody
 	public HttpEntity<Robot> getRobot(@PathVariable int id) {
 
-		RobotList list = new RobotList();
-		Robot robot = list.getRobot(id);
+		RobotList robotList = new RobotList();
+		Robot robot = robotList.getRobot(id);
 
 		if (robot == null) {
 			return new ResponseEntity<Robot>(HttpStatus.BAD_REQUEST);
 		}
 
-		robot.setLinks();
+		setLinks(robot);
 
 		return new ResponseEntity<Robot>(robot, HttpStatus.OK);
 	}
@@ -91,8 +94,8 @@ public class RobotController {
 	@ResponseBody
 	public HttpEntity<Robot> turnLeft(@PathVariable int id) {
 
-		RobotList list = new RobotList();
-		Robot robot = list.getRobot(id);
+		RobotList robotList = new RobotList();
+		Robot robot = robotList.getRobot(id);
 		robot.turnLeft();
 
 		return getRobot(id);
@@ -102,8 +105,8 @@ public class RobotController {
 	@ResponseBody
 	public HttpEntity<Robot> turnRight(@PathVariable int id) {
 
-		RobotList list = new RobotList();
-		Robot robot = list.getRobot(id);
+		RobotList robotList = new RobotList();
+		Robot robot = robotList.getRobot(id);
 		robot.turnRight();
 
 		return getRobot(id);
@@ -113,58 +116,33 @@ public class RobotController {
 	@ResponseBody
 	public HttpEntity<Robot> move(@PathVariable int id) {
 
-		RobotList list = new RobotList();
-		Robot robot = list.getRobot(id);
+		RobotList robotList = new RobotList();
+		Robot robot = robotList.getRobot(id);
 		robot.move();
 
 		return getRobot(id);
 	}
 
-	@RequestMapping("/rooms")
-	@ResponseBody
-	public HttpEntity<RoomList> getRooms() {
+	public void setLinks(Robot robot) {
+		robot.removeLinks();
+		robot.add(linkTo(methodOn(RobotController.class).root())
+				.withRel("Home"));
 
-		RoomList list = new RoomList();
-		list.add(linkTo(methodOn(RobotController.class).root()).withRel("Home"));
-		list.add(linkTo(methodOn(RobotController.class).getRooms())
+		robot.add(linkTo(
+				methodOn(RobotController.class).getRobot(robot.getRobotId()))
 				.withSelfRel());
 
-		HashMap<String, Integer> defaultRoom = new HashMap<String, Integer>();
-		defaultRoom.put("width", 5);
-		defaultRoom.put("height", 5);
-		list.add(linkTo(methodOn(RobotController.class).addRoom(defaultRoom))
-				.withRel("Add Room"));
-
-		return new ResponseEntity<RoomList>(list, HttpStatus.OK);
-
-	}
-
-	@RequestMapping(value = "/rooms/add", method = RequestMethod.POST, consumes = "application/json")
-	@ResponseBody
-	public HttpEntity<RoomList> addRoom(@RequestBody Map<String, Integer> data) {
-
-		if (!data.containsKey("height") || !data.containsKey("width")) {
-			return new ResponseEntity<RoomList>(HttpStatus.BAD_REQUEST);
+		robot.add(linkTo(
+				methodOn(RobotController.class).turnLeft(robot.getRobotId()))
+				.withRel("Turn Left"));
+		robot.add(linkTo(
+				methodOn(RobotController.class).turnRight(robot.getRobotId()))
+				.withRel("Turn Right"));
+		if (robot.canMove()) {
+			robot.add(linkTo(
+					methodOn(RobotController.class).move(robot.getRobotId()))
+					.withRel("Move Robot Forward"));
 		}
-
-		RoomList list = new RoomList();
-		list.addRoom(data.get("width"), data.get("height"));
-
-		return getRooms();
-	}
-
-	@RequestMapping("/rooms/{id}")
-	@ResponseBody
-	public HttpEntity<Room> getRoom(@PathVariable int id) {
-
-		RoomList list = new RoomList();
-		Room room = list.getRoom(id);
-
-		if (room == null) {
-			return new ResponseEntity<Room>(HttpStatus.BAD_REQUEST);
-		}
-
-		return new ResponseEntity<Room>(room, HttpStatus.OK);
 	}
 
 }

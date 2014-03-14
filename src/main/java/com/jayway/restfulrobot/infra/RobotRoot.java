@@ -1,4 +1,4 @@
-package robot;
+package com.jayway.restfulrobot.infra;
 
 import org.springframework.hateoas.ResourceSupport;
 

@@ -1,10 +1,12 @@
-package robot;
+package com.jayway.restfulrobot.domain;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.ResourceSupport;
+
+import com.jayway.restfulrobot.rest.RoomController;
 
 public class Robot extends ResourceSupport {
 
@@ -14,13 +16,15 @@ public class Robot extends ResourceSupport {
 	public static final int EAST = 3;
 
 	private int robotId;
+	private String name;
 	private int xPos;
 	private int yPos;
 	private Room room;
 	private int dir;
 
-	public Robot(int id, Room room) {
+	public Robot(int id, String name, Room room) {
 		this.robotId = id;
+		this.name = name;
 		xPos = 0;
 		yPos = 0;
 		this.room = room;
@@ -31,8 +35,12 @@ public class Robot extends ResourceSupport {
 		return robotId;
 	}
 
+	public String getName() {
+		return name;
+	}
+
 	public Link getRoom() {
-		return linkTo(methodOn(RobotController.class).getRoom(room.getRoomId()))
+		return linkTo(methodOn(RoomController.class).getRoom(room.getRoomId()))
 				.withSelfRel();
 	}
 
@@ -85,7 +93,7 @@ public class Robot extends ResourceSupport {
 		}
 	}
 
-	public void setLinks() {
+	public boolean canMove() {
 		int newX = 0;
 		int newY = 0;
 
@@ -108,19 +116,7 @@ public class Robot extends ResourceSupport {
 			newY = yPos;
 			break;
 		}
-
-		this.removeLinks();
-		this.add(linkTo(methodOn(RobotController.class).root()).withRel("Home"));
-		this.add(linkTo(methodOn(RobotController.class).getRobot(robotId))
-				.withSelfRel());
-		this.add(linkTo(methodOn(RobotController.class).turnLeft(robotId))
-				.withRel("Turn Left"));
-		this.add(linkTo(methodOn(RobotController.class).turnRight(robotId))
-				.withRel("Turn Right"));
-		if (room.contains(newX, newY)) {
-			this.add(linkTo(methodOn(RobotController.class).move(robotId))
-					.withRel("Move Robot Forward"));
-		}
+		return room.contains(newX, newY);
 	}
 
 }
