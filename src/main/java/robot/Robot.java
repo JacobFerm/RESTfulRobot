@@ -25,7 +25,6 @@ public class Robot extends ResourceSupport {
 		yPos = 0;
 		this.room = room;
 		dir = NORTH;
-		setLinks();
 	}
 
 	public int getRobotId() {
@@ -51,12 +50,10 @@ public class Robot extends ResourceSupport {
 
 	public void turnLeft() {
 		dir = (dir + 1) % 4;
-		setLinks();
 	}
 
 	public void turnRight() {
 		dir = (dir + 3) % 4;
-		setLinks();
 	}
 
 	public void move() {
@@ -86,11 +83,9 @@ public class Robot extends ResourceSupport {
 			xPos = newX;
 			yPos = newY;
 		}
-
-		setLinks();
 	}
 
-	private void setLinks() {
+	public void setLinks() {
 		int newX = 0;
 		int newY = 0;
 
@@ -115,6 +110,9 @@ public class Robot extends ResourceSupport {
 		}
 
 		this.removeLinks();
+		this.add(linkTo(methodOn(RobotController.class).root()).withRel("Home"));
+		this.add(linkTo(methodOn(RobotController.class).getRobot(robotId))
+				.withSelfRel());
 		this.add(linkTo(methodOn(RobotController.class).turnLeft(robotId))
 				.withRel("Turn Left"));
 		this.add(linkTo(methodOn(RobotController.class).turnRight(robotId))

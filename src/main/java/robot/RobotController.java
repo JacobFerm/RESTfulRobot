@@ -25,10 +25,10 @@ public class RobotController {
 
 		RobotRoot root = new RobotRoot();
 		root.add(linkTo(methodOn(RobotController.class).root()).withSelfRel());
-		root.add(linkTo(methodOn(RobotController.class).getRobots())
-				.withSelfRel());
-		root.add(linkTo(methodOn(RobotController.class).getRooms())
-				.withSelfRel());
+		root.add(linkTo(methodOn(RobotController.class).getRobots()).withRel(
+				"List Robots"));
+		root.add(linkTo(methodOn(RobotController.class).getRooms()).withRel(
+				"List Rooms"));
 
 		return new ResponseEntity<RobotRoot>(root, HttpStatus.OK);
 	}
@@ -38,10 +38,17 @@ public class RobotController {
 	public HttpEntity<RobotList> getRobots() {
 
 		RobotList list = new RobotList();
+
+		list.add(linkTo(methodOn(RobotController.class).root()).withRel("Home"));
 		list.add(linkTo(methodOn(RobotController.class).getRobots())
 				.withSelfRel());
-		return new ResponseEntity<RobotList>(list, HttpStatus.OK);
 
+		HashMap<String, Integer> defaultRoom = new HashMap<String, Integer>();
+		defaultRoom.put("roomId", 1);
+		list.add(linkTo(methodOn(RobotController.class).addRobot(defaultRoom))
+				.withRel("Add Robot"));
+
+		return new ResponseEntity<RobotList>(list, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/robots/add", method = RequestMethod.POST, consumes = "application/json")
@@ -74,6 +81,8 @@ public class RobotController {
 		if (robot == null) {
 			return new ResponseEntity<Robot>(HttpStatus.BAD_REQUEST);
 		}
+
+		robot.setLinks();
 
 		return new ResponseEntity<Robot>(robot, HttpStatus.OK);
 	}
@@ -116,6 +125,7 @@ public class RobotController {
 	public HttpEntity<RoomList> getRooms() {
 
 		RoomList list = new RoomList();
+		list.add(linkTo(methodOn(RobotController.class).root()).withRel("Home"));
 		list.add(linkTo(methodOn(RobotController.class).getRooms())
 				.withSelfRel());
 
@@ -123,13 +133,13 @@ public class RobotController {
 		defaultRoom.put("width", 5);
 		defaultRoom.put("height", 5);
 		list.add(linkTo(methodOn(RobotController.class).addRoom(defaultRoom))
-				.withSelfRel());
+				.withRel("Add Room"));
 
 		return new ResponseEntity<RoomList>(list, HttpStatus.OK);
 
 	}
 
-	@RequestMapping(value = "rooms/add", method = RequestMethod.POST, consumes = "application/json")
+	@RequestMapping(value = "/rooms/add", method = RequestMethod.POST, consumes = "application/json")
 	@ResponseBody
 	public HttpEntity<RoomList> addRoom(@RequestBody Map<String, Integer> data) {
 

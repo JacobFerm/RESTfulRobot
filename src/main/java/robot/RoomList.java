@@ -20,7 +20,7 @@ public class RoomList extends ResourceSupport {
 
 		for (Integer i : rooms.keySet()) {
 			linkMap.put(i, linkTo(methodOn(RobotController.class).getRoom(i))
-					.withSelfRel());
+					.withRel("Room " + i));
 		}
 		return linkMap;
 	}

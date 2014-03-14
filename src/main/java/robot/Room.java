@@ -1,6 +1,11 @@
 package robot;
 
-public class Room {
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+
+import org.springframework.hateoas.ResourceSupport;
+
+public class Room extends ResourceSupport {
 
 	private int roomId;
 	private int width;
@@ -10,6 +15,9 @@ public class Room {
 		this.roomId = roomId;
 		this.width = width;
 		this.height = height;
+		this.add(linkTo(methodOn(RobotController.class).root()).withRel("Home"));
+		this.add(linkTo(methodOn(RobotController.class).getRoom(roomId))
+				.withSelfRel());
 	}
 
 	public int getRoomId() {

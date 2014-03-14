@@ -19,7 +19,7 @@ public class RobotList extends ResourceSupport {
 
 		for (Integer i : robots.keySet()) {
 			linkMap.put(i, linkTo(methodOn(RobotController.class).getRobot(i))
-					.withSelfRel());
+					.withRel("Robot " + i));
 		}
 		return linkMap;
 	}
