@@ -1,15 +1,15 @@
 package com.jayway.restfulrobot.infra.rest.resource;
 
-import com.jayway.restfulrobot.infra.rest.RobotController;
-import com.jayway.restfulrobot.infra.rest.RoomController;
-
-import com.jayway.restfulrobot.domain.Room;
-import org.springframework.hateoas.ResourceSupport;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 import java.util.*;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+import org.springframework.hateoas.ResourceSupport;
+
+import com.jayway.restfulrobot.domain.Room;
+import com.jayway.restfulrobot.infra.rest.RobotController;
+import com.jayway.restfulrobot.infra.rest.RoomController;
 
 public class RoomListResource extends ResourceSupport {
 
@@ -20,13 +20,13 @@ public class RoomListResource extends ResourceSupport {
         for (Room r : roomList) {
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("id", r.getRoomId());
-            map.put("links", linkTo(methodOn(RoomController.class).getRoom(r.getRoomId())).withRel("Room " + r.getRoomId()));
+            map.put("links", linkTo(methodOn(RoomController.class).getRoom(r.getRoomId())).withRel("room-" + r.getRoomId()));
             rooms.add(map);
         }
 
-        this.add(linkTo(methodOn(RobotController.class).root()).withRel("Home"));
+        this.add(linkTo(methodOn(RobotController.class).root()).withRel("home"));
         this.add(linkTo(methodOn(RoomController.class).getRooms()).withSelfRel());
-        this.add(linkTo(methodOn(RoomController.class).addRoom(null)).withRel("Add Room"));
+        this.add(linkTo(methodOn(RoomController.class).addRoom(null)).withRel("add-room"));
     }
 
     public ArrayList<Map<String, Object>> getRooms() {

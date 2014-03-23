@@ -1,13 +1,14 @@
 package com.jayway.restfulrobot.infra.rest.resource;
 
-import com.jayway.restfulrobot.infra.rest.RobotController;
-import com.jayway.restfulrobot.infra.rest.RoomController;
-
-import com.jayway.restfulrobot.domain.Robot;
-import org.springframework.hateoas.Link;
-import org.springframework.hateoas.ResourceSupport;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.ResourceSupport;
+
+import com.jayway.restfulrobot.domain.Robot;
+import com.jayway.restfulrobot.infra.rest.RobotController;
+import com.jayway.restfulrobot.infra.rest.RoomController;
 
 public class RobotResource extends ResourceSupport {
 
@@ -25,14 +26,14 @@ public class RobotResource extends ResourceSupport {
         yPos = robot.getYPos();
         dir = robot.getDir();
 
-        room = linkTo(methodOn(RoomController.class).getRoom(robot.getRoom().getRoomId())).withRel("Room " + robot.getRoom().getRoomId());
+        room = linkTo(methodOn(RoomController.class).getRoom(robot.getRoom().getRoomId())).withRel("room-" + robot.getRoom().getRoomId());
 
-        this.add(linkTo(methodOn(RobotController.class).root()).withRel("Home"));
+        this.add(linkTo(methodOn(RobotController.class).root()).withRel("home"));
         this.add(linkTo(methodOn(RobotController.class).getRobot(robot.getRobotId())).withSelfRel());
-        this.add(linkTo(methodOn(RobotController.class).turnLeft(robot.getRobotId())).withRel("Turn Left"));
-        this.add(linkTo(methodOn(RobotController.class).turnRight(robot.getRobotId())).withRel("Turn Right"));
+        this.add(linkTo(methodOn(RobotController.class).turnLeft(robot.getRobotId())).withRel("turn-left"));
+        this.add(linkTo(methodOn(RobotController.class).turnRight(robot.getRobotId())).withRel("turn-right"));
         if (robot.canMove()) {
-            this.add(linkTo(methodOn(RobotController.class).move(robot.getRobotId())).withRel("Move Robot Forward"));
+            this.add(linkTo(methodOn(RobotController.class).move(robot.getRobotId())).withRel("move-robot-forward"));
         }
     }
 

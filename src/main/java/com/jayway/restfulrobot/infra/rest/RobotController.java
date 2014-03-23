@@ -1,13 +1,8 @@
 package com.jayway.restfulrobot.infra.rest;
 
-import com.jayway.restfulrobot.infra.rest.resource.RobotListResource;
-import com.jayway.restfulrobot.infra.rest.resource.RobotResource;
-import com.jayway.restfulrobot.infra.rest.resource.RootResource;
+import java.util.Collection;
+import java.util.Map;
 
-import com.jayway.restfulrobot.domain.RoomRepository;
-import com.jayway.restfulrobot.domain.RobotRepository;
-import com.jayway.restfulrobot.domain.Robot;
-import com.jayway.restfulrobot.domain.Room;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
@@ -15,8 +10,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collection;
-import java.util.Map;
+import com.jayway.restfulrobot.domain.*;
+import com.jayway.restfulrobot.infra.rest.resource.RobotListResource;
+import com.jayway.restfulrobot.infra.rest.resource.RobotResource;
+import com.jayway.restfulrobot.infra.rest.resource.RootResource;
 
 @Controller
 public class RobotController {

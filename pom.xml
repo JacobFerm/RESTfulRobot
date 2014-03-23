@@ -19,25 +19,34 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
+			<groupId>org.springframework.plugin</groupId>
+			<artifactId>spring-plugin-core</artifactId>
+			<version>0.8.0.RELEASE</version>
+		</dependency>
+        <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.hateoas</groupId>
             <artifactId>spring-hateoas</artifactId>
-            <version>0.8.0.RELEASE</version>
         </dependency>
+        <dependency>
+     		 <groupId>com.jayway.restassured</groupId>
+		     <artifactId>rest-assured</artifactId>
+		     <version>2.3.0</version>
+		     <scope>test</scope>
+		</dependency>
     </dependencies>
 
     <properties>
-        <start-class>robot.Application</start-class>
+        <start-class>com.jayway.restfulrobot.boot.Application</start-class>
     </properties>
 
     <build>
         <plugins>
             <plugin> 
                 <artifactId>maven-compiler-plugin</artifactId> 
-                <version>2.3.2</version> 
             </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
