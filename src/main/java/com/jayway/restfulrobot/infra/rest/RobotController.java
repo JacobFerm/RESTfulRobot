@@ -1,12 +1,13 @@
-package com.jayway.restfulrobot.rest;
+package com.jayway.restfulrobot.infra.rest;
 
+import com.jayway.restfulrobot.infra.rest.resource.RobotListResource;
+import com.jayway.restfulrobot.infra.rest.resource.RobotResource;
+import com.jayway.restfulrobot.infra.rest.resource.RootResource;
+
+import com.jayway.restfulrobot.domain.RoomRepository;
+import com.jayway.restfulrobot.domain.RobotRepository;
 import com.jayway.restfulrobot.domain.Robot;
 import com.jayway.restfulrobot.domain.Room;
-import com.jayway.restfulrobot.infra.RobotRepository;
-import com.jayway.restfulrobot.infra.RoomRepository;
-import com.jayway.restfulrobot.rest.resource.RobotListResource;
-import com.jayway.restfulrobot.rest.resource.RobotResource;
-import com.jayway.restfulrobot.rest.resource.RootResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;

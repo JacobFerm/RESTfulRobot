@@ -1,6 +1,5 @@
-package com.jayway.restfulrobot.infra;
+package com.jayway.restfulrobot.domain;
 
-import com.jayway.restfulrobot.domain.Room;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;

@@ -1,11 +1,11 @@
-package com.jayway.restfulrobot.rest.resource;
+package com.jayway.restfulrobot.infra.rest.resource;
+
+import com.jayway.restfulrobot.infra.rest.RobotController;
+import com.jayway.restfulrobot.infra.rest.RoomController;
 
 import com.jayway.restfulrobot.domain.Robot;
-import com.jayway.restfulrobot.rest.RobotController;
-import com.jayway.restfulrobot.rest.RoomController;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.ResourceSupport;
-
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 

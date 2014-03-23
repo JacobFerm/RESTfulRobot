@@ -1,7 +1,8 @@
-package com.jayway.restfulrobot.rest.resource;
+package com.jayway.restfulrobot.infra.rest.resource;
+
+import com.jayway.restfulrobot.infra.rest.RobotController;
 
 import com.jayway.restfulrobot.domain.Robot;
-import com.jayway.restfulrobot.rest.RobotController;
 import org.springframework.hateoas.ResourceSupport;
 
 import java.util.*;
