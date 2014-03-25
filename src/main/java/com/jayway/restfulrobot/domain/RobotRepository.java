@@ -25,4 +25,9 @@ public class RobotRepository {
         return robots.get(id);
     }
 
+    public void reset() {
+        robots = new HashMap<Integer, Robot>();
+        nextRobotId = 1;
+    }
+
 }

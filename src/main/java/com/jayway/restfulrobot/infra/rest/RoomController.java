@@ -39,10 +39,18 @@ public class RoomController {
         if (!data.containsKey("height") || !data.containsKey("width")) {
             return new ResponseEntity<RoomListResource>(HttpStatus.BAD_REQUEST);
         }
+        int width = data.get("width");
+        int height = data.get("height");
+        if (width < 2 || height < 2) {
+            return new ResponseEntity<RoomListResource>(HttpStatus.BAD_REQUEST);
+        }
 
         roomRepository.addRoom(data.get("width"), data.get("height"));
 
-        return getRooms();
+        Collection<Room> rooms = roomRepository.getRooms();
+        RoomListResource roomListResource = new RoomListResource(rooms);
+
+        return new ResponseEntity<RoomListResource>(roomListResource, HttpStatus.CREATED);
     }
 
     @RequestMapping("/rooms/{id}")

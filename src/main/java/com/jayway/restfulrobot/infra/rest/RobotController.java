@@ -59,7 +59,9 @@ public class RobotController {
 
         robotRepository.addRobot((String) data.get("name"), room);
 
-        return getRobots();
+        Collection<Robot> robots = robotRepository.getRobots();
+        RobotListResource robotListResource = new RobotListResource(robots);
+        return new ResponseEntity<RobotListResource>(robotListResource, HttpStatus.CREATED);
     }
 
     @RequestMapping("/robots/{id}")
@@ -102,9 +104,11 @@ public class RobotController {
     public HttpEntity<RobotResource> move(@PathVariable int id) {
 
         Robot robot = robotRepository.getRobot(id);
-        robot.move();
-
-        return getRobot(id);
+        if (robot.move()) {
+            return getRobot(id);
+        } else {
+            return new ResponseEntity<RobotResource>(HttpStatus.BAD_REQUEST);
+        }
     }
 
 }

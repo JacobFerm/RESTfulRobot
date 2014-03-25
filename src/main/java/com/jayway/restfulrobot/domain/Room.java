@@ -25,7 +25,7 @@ public class Room {
     }
 
     public boolean contains(int newX, int newY) {
-        if (Math.abs(newX) < width && Math.abs(newY) < height) {
+        if (newX > 0 && newX < width && newY > 0 && newY < height) {
             return true;
         }
         return false;

@@ -25,4 +25,9 @@ public class RoomRepository {
         return rooms.get(roomId);
     }
 
+    public void reset() {
+        rooms = new HashMap<Integer, Room>();
+        nextRoomId = 1;
+    }
+
 }

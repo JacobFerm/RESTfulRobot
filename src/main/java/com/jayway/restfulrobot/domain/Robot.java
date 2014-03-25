@@ -17,8 +17,8 @@ public class Robot {
     public Robot(int id, String name, Room room) {
         this.robotId = id;
         this.name = name;
-        xPos = 0;
-        yPos = 0;
+        xPos = 1;
+        yPos = 1;
         this.room = room;
         dir = NORTH;
     }
@@ -55,7 +55,7 @@ public class Robot {
         dir = (dir + 3) % 4;
     }
 
-    public void move() {
+    public boolean move() {
         int newX = 0;
         int newY = 0;
         switch (dir) {
@@ -81,6 +81,9 @@ public class Robot {
         if (room.contains(newX, newY)) {
             xPos = newX;
             yPos = newY;
+            return true;
+        } else {
+            return false;
         }
     }
 

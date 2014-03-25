@@ -20,7 +20,7 @@ public class RoomListResource extends ResourceSupport {
         for (Room r : roomList) {
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("id", r.getRoomId());
-            map.put("links", linkTo(methodOn(RoomController.class).getRoom(r.getRoomId())).withRel("room-" + r.getRoomId()));
+            map.put("_links", linkTo(methodOn(RoomController.class).getRoom(r.getRoomId())).withRel("room-" + r.getRoomId()));
             rooms.add(map);
         }
 

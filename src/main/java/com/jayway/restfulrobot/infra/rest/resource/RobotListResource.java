@@ -20,7 +20,7 @@ public class RobotListResource extends ResourceSupport {
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("id", r.getRobotId());
             map.put("name", r.getName());
-            map.put("links", linkTo(methodOn(RobotController.class).getRobot(r.getRobotId())).withRel("robot-" + r.getRobotId()));
+            map.put("_links", linkTo(methodOn(RobotController.class).getRobot(r.getRobotId())).withRel("robot-" + r.getRobotId()));
             robots.add(map);
         }
 
