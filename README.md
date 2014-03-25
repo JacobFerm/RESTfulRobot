@@ -29,9 +29,10 @@ The robot resource should include the attributes of the robot as well as which o
 
 Instructions
 --------------
-As this lab is about REST, the boot and domain code is already completed. As an example of REST using Spring, the root resource is also implemented.
+As this lab is about REST, the boot and domain code is already completed. As an example of REST using Spring, the root resource is partially implemented.
 
 A number of tests have been created using RestAssured that may guide the developer. Implement the necessary REST controller and resource code and most of the functionality listed in the previous section should be completed. The suggested order is:
+- RootListResource
 - RoomResourceTest
 - RobotResourceTest
 - RobotMovementResourceTest 
